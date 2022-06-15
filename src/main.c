@@ -67,7 +67,7 @@ static SWS_rc_t process()
         return SWS_ERROR;
     }
 
-    int gpio_state = SWS_gpio_get();
+    SWS_gpio_state_t gpio_state = SWS_gpio_get();
 
     if (within_schedule && gpio_state == SWS_GPIO_LOW)
     {

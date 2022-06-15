@@ -34,7 +34,7 @@ SWS_rc_t SWS_gpio_init()
     return SWS_ERROR;
 }
 
-int SWS_gpio_get()
+SWS_gpio_state_t SWS_gpio_get()
 {
     printf("[STUB] GPIO Get > ");
 
@@ -51,7 +51,7 @@ int SWS_gpio_get()
     return 0;
 }
 
-void SWS_gpio_set(int value)
+void SWS_gpio_set(SWS_gpio_state_t value)
 {
     printf("Stub GPIO set (value = %d)\n", value);
 }
