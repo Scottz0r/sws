@@ -8,7 +8,7 @@
 typedef struct charbuff_t
 {
     FILE* fp;
-    char ch;
+    int ch;
     int linenum;
 } charbuff_t;
 
