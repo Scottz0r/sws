@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 
-#define TIMESTAMP_BUFFER_MIN 16
+#define TIMESTAMP_BUFFER_MIN 32
 
 
 static void get_timestamp(char* buffer)
@@ -38,18 +38,17 @@ static void get_timestamp(char* buffer)
     sprintf(buffer + 19, ".%03d", millis);
 }
 
-void sws_log(const char* format, ...)
+void SWS_log(const char* format, ...)
 {
     char time_buffer[TIMESTAMP_BUFFER_MIN];
-
-    va_list args;
-    va_start(args, format);
-
+   
     get_timestamp(time_buffer);
     printf("%s: ", time_buffer);
 
+    va_list args;
+    va_start(args, format);
     vprintf(format, args);
-    printf("\n");
-    
     va_end(args);
+
+    printf("\n");
 }

@@ -76,7 +76,7 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // First digit must be digit.
     if (!isdigit(buff->ch))
     {
-        sws_log("Error parsing line %d: Expected digit", buff->linenum);
+        SWS_log("Error parsing line %d: Expected digit", buff->linenum);
         return false;
     }
 
@@ -86,7 +86,7 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Followed by one space.
     if (buff->ch != ' ')
     {
-        sws_log("Error parsing line %d: Expected space", buff->linenum);
+        SWS_log("Error parsing line %d: Expected space", buff->linenum);
         return false;
     }
     nextchar(buff);
@@ -94,14 +94,14 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Followed by four digits.
     if (!read_four_digits(buff, &result->start_time))
     {
-        sws_log("Error parsing line %d: Expected four digits", buff->linenum);
+        SWS_log("Error parsing line %d: Expected four digits", buff->linenum);
         return false;
     }
 
     // Then one space
     if (buff->ch != ' ')
     {
-        sws_log("Error parsing line %d: Expected space", buff->linenum);
+        SWS_log("Error parsing line %d: Expected space", buff->linenum);
         return false;
     }
     nextchar(buff);
@@ -109,14 +109,14 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Then four more digits
     if (!read_four_digits(buff, &result->end_time))
     {
-        sws_log("Error parsing line %d: Expected four digits", buff->linenum);
+        SWS_log("Error parsing line %d: Expected four digits", buff->linenum);
         return false;
     }
 
     // Must end with newline.
     if (buff->ch != '\n')
     {
-        sws_log("Error parsing line %d: Expected new line", buff->linenum);
+        SWS_log("Error parsing line %d: Expected new line", buff->linenum);
         return false;
     }
 
@@ -131,7 +131,7 @@ int SWS_parse_config(const char* filename, SWS_schedule_t* entries, int entries_
     FILE* fp = fopen(filename, "r");
     if (fp == NULL)
     {
-        sws_log("Failed to open config file");
+        SWS_log("Failed to open config file");
         return -1;
     }
 

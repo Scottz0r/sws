@@ -24,7 +24,7 @@ int main(int argc, const char** argv)
 {
     if (argc != 2)
     {
-        sws_log("Invalid arguments. Expected [config file]");
+        SWS_log("Invalid arguments. Expected [config file]");
         return SWS_EXIT_BAD_ARG;
     }
 
@@ -32,19 +32,19 @@ int main(int argc, const char** argv)
 
     if (SWS_gpio_init() != SWS_OK)
     {
-        sws_log("Failed to initialize GPIO interface");
+        SWS_log("Failed to initialize GPIO interface");
         return SWS_EXIT_ERROR;
     }
 
     s_count_schedules = SWS_parse_config(cfg_path, s_schedules, SWS_MAX_SCHEDULE);
     if (s_count_schedules < 0)
     {
-        sws_log("Failed to parse config");
+        SWS_log("Failed to parse config");
         return SWS_EXIT_BAD_CFG;
     }
     else if(s_count_schedules == 0)
     {
-        sws_log("No values configured");
+        SWS_log("No values configured");
         return SWS_EXIT_BAD_CFG;
     }
 
@@ -53,7 +53,7 @@ int main(int argc, const char** argv)
         return SWS_EXIT_ERROR;
     }
 
-    sws_log("SWS execution successful");
+    SWS_log("SWS execution successful");
     return SWS_EXIT_OK;
 }
 
@@ -72,12 +72,12 @@ static SWS_rc_t process()
 
     if (within_schedule && gpio_state == SWS_GPIO_LOW)
     {
-        sws_log("Inside schedule and light ON. Toggling OFF");
+        SWS_log("Inside schedule and light ON. Toggling OFF");
         SWS_gpio_set(SWS_GPIO_HIGH);
     }
     else if(!within_schedule && gpio_state == SWS_GPIO_HIGH)
     {
-        sws_log("Outside schedule and light ON. Toggling OFF");
+        SWS_log("Outside schedule and light ON. Toggling OFF");
         SWS_gpio_set(SWS_GPIO_LOW);
     }
 
@@ -98,7 +98,7 @@ static SWS_rc_t is_within_schedule(int* is_within_schedule)
 
     if (SWS_get_now(&now_day, &now_time_hhmm) != SWS_OK)
     {
-        sws_log("Failed to get local time");
+        SWS_log("Failed to get local time");
         return SWS_ERROR;
     }
 
