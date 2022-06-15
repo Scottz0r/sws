@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#include "sws_logger.h"
+
 // Buffer for characters to make parsing easier.
 typedef struct charbuff_t
 {
@@ -74,7 +76,7 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // First digit must be digit.
     if (!isdigit(buff->ch))
     {
-        fprintf(stderr, "Error parsing line %d: Expected digit\n", buff->linenum);
+        sws_log("Error parsing line %d: Expected digit", buff->linenum);
         return false;
     }
 
@@ -84,7 +86,7 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Followed by one space.
     if (buff->ch != ' ')
     {
-        fprintf(stderr, "Error parsing line %d: Expected space\n", buff->linenum);
+        sws_log("Error parsing line %d: Expected space", buff->linenum);
         return false;
     }
     nextchar(buff);
@@ -92,14 +94,14 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Followed by four digits.
     if (!read_four_digits(buff, &result->start_time))
     {
-        fprintf(stderr, "Error parsing line %d: Expected four digits\n", buff->linenum);
+        sws_log("Error parsing line %d: Expected four digits", buff->linenum);
         return false;
     }
 
     // Then one space
     if (buff->ch != ' ')
     {
-        fprintf(stderr, "Error parsing line %d: Expected space\n", buff->linenum);
+        sws_log("Error parsing line %d: Expected space", buff->linenum);
         return false;
     }
     nextchar(buff);
@@ -107,14 +109,14 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Then four more digits
     if (!read_four_digits(buff, &result->end_time))
     {
-        fprintf(stderr, "Error parsing line %d: Expected four digits\n", buff->linenum);
+        sws_log("Error parsing line %d: Expected four digits", buff->linenum);
         return false;
     }
 
     // Must end with newline.
     if (buff->ch != '\n')
     {
-        fprintf(stderr, "Error parsing line %d: Expected new line\n", buff->linenum);
+        sws_log("Error parsing line %d: Expected new line", buff->linenum);
         return false;
     }
 
@@ -129,7 +131,7 @@ int SWS_parse_config(const char* filename, SWS_schedule_t* entries, int entries_
     FILE* fp = fopen(filename, "r");
     if (fp == NULL)
     {
-        fprintf(stderr, "Failed to open config file\n");
+        sws_log("Failed to open config file");
         return -1;
     }
 

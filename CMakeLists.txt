@@ -5,6 +5,7 @@ project(sws)
 # Manually set sources.
 set(sources
     src/main.c
+    src/sws_logger.c
 )
 
 # GPIO Stub file

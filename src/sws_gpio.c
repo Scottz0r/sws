@@ -5,8 +5,7 @@
  */
 #include "sws_gpio.h"
 
-// For error reporting.
-#include <stdio.h>
+#include "sws_logger.h"
 
 // Linux specific headers:
 #include <fcntl.h>
@@ -40,7 +39,7 @@ SWS_rc_t SWS_gpio_init()
     
     if (!fd) 
     {
-        fprintf(stderr, "Failed to open GPIO file descriptor\n");
+        sws_log("Failed to open GPIO file descriptor");
         return SWS_ERROR;
     }
     
@@ -52,7 +51,7 @@ SWS_rc_t SWS_gpio_init()
 
     if (gpio_reg == MAP_FAILED)
     {
-        fprintf(stderr, "Failed to map memory.\n");
+        sws_log("Failed to map memory");
         return SWS_ERROR;
     }
         
