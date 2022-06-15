@@ -1,0 +1,9 @@
+; This is a test config file
+; Lines that start with an ';' are comments.
+; Format d dddd dddd 
+;       [day] [start time] [end time]
+; Lines must end with a newline character after the end time.
+0 1000 1300
+1 1200 1300
+3 0000 1159
+4 0000 0630
