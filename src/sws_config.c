@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-#include "sws_logger.h"
+#include "dbg.h"
 
 // Buffer for characters to make parsing easier.
 typedef struct charbuff_t
@@ -16,6 +16,8 @@ typedef struct charbuff_t
 
 static void nextchar(charbuff_t* buff)
 {
+    DBG_assert_continue(buff != NULL);
+
     if (buff->ch == '\n')
     {
         ++buff->linenum;
@@ -32,6 +34,11 @@ static void nextchar(charbuff_t* buff)
 
 static bool parse_comment_line(charbuff_t* buff)
 {
+    if (!DBG_assert(buff != NULL))
+    {
+        return false;
+    }
+
     // Read until newline found.
     do
     {
@@ -50,6 +57,11 @@ static bool parse_comment_line(charbuff_t* buff)
 
 static bool read_four_digits(charbuff_t* buff, int* result)
 {
+    if (!DBG_assert(buff != NULL) || !DBG_assert(result != NULL))
+    {
+        return false;
+    }
+
     *result = 0;
 
     for (int i = 0; i < 4; ++i)
@@ -69,6 +81,11 @@ static bool read_four_digits(charbuff_t* buff, int* result)
 
 static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
 {
+    if (!DBG_assert(buff != NULL) || !DBG_assert(result != NULL))
+    {
+        return false;
+    }
+
     result->day = -1;
     result->start_time = -1;
     result->end_time = -1;
@@ -76,7 +93,7 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // First digit must be digit.
     if (!isdigit(buff->ch))
     {
-        SWS_log("Error parsing line %d: Expected digit", buff->linenum);
+        DBG_log("Error parsing line %d: Expected digit", buff->linenum);
         return false;
     }
 
@@ -86,7 +103,7 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Followed by one space.
     if (buff->ch != ' ')
     {
-        SWS_log("Error parsing line %d: Expected space", buff->linenum);
+        DBG_log("Error parsing line %d: Expected space", buff->linenum);
         return false;
     }
     nextchar(buff);
@@ -94,14 +111,14 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Followed by four digits.
     if (!read_four_digits(buff, &result->start_time))
     {
-        SWS_log("Error parsing line %d: Expected four digits", buff->linenum);
+        DBG_log("Error parsing line %d: Expected four digits", buff->linenum);
         return false;
     }
 
     // Then one space
     if (buff->ch != ' ')
     {
-        SWS_log("Error parsing line %d: Expected space", buff->linenum);
+        DBG_log("Error parsing line %d: Expected space", buff->linenum);
         return false;
     }
     nextchar(buff);
@@ -109,14 +126,14 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
     // Then four more digits
     if (!read_four_digits(buff, &result->end_time))
     {
-        SWS_log("Error parsing line %d: Expected four digits", buff->linenum);
+        DBG_log("Error parsing line %d: Expected four digits", buff->linenum);
         return false;
     }
 
     // Must end with newline.
     if (buff->ch != '\n')
     {
-        SWS_log("Error parsing line %d: Expected new line", buff->linenum);
+        DBG_log("Error parsing line %d: Expected new line", buff->linenum);
         return false;
     }
 
@@ -128,11 +145,24 @@ static bool parse_data_line(charbuff_t* buff, SWS_schedule_t* result)
 
 int SWS_parse_config(const char* filename, SWS_schedule_t* entries, int entries_size)
 {
+#define PARSE_BAD_RC -1
+
+    if (!DBG_assert(filename != NULL) || !DBG_assert(entries != NULL))
+    {
+        return PARSE_BAD_RC;
+    }
+
+    // Entries size must be a valid and non-zero range
+    if (!DBG_assert(entries_size > 0))
+    {
+        return PARSE_BAD_RC;
+    }
+
     FILE* fp = fopen(filename, "r");
     if (fp == NULL)
     {
-        SWS_log("Failed to open config file");
-        return -1;
+        DBG_log("Failed to open config file");
+        return PARSE_BAD_RC;
     }
 
     charbuff_t buff;
@@ -163,7 +193,7 @@ int SWS_parse_config(const char* filename, SWS_schedule_t* entries, int entries_
             }
             else
             {
-                return -1;
+                return PARSE_BAD_RC;
             }
         }
     }
@@ -171,7 +201,7 @@ int SWS_parse_config(const char* filename, SWS_schedule_t* entries, int entries_
     // Too many case.
     if (schedule_idx >= entries_size)
     {
-        return -1;
+        return PARSE_BAD_RC;
     }
 
     return schedule_idx;

@@ -2,11 +2,6 @@
 
 #include <time.h>
 
-// Windows work-around for unix `localtime_r`. Same behavior as `localtime_s`.
-#ifdef _WIN32
-#define localtime_r(timer, buf) localtime_s(buf, timer)
-#endif
-
 SWS_rc_t SWS_get_now(int* tm_day, int* tm_hhmm)
 {
     time_t t = time(NULL);

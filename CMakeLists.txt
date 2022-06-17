@@ -2,10 +2,12 @@ cmake_minimum_required(VERSION 3.16)
 
 project(sws)
 
+# Add libraries directories
+add_subdirectory(lib/dbg_lib/src)
+
 # Manually set sources.
 set(sources
     src/main.c
-    src/sws_logger.c
 )
 
 # GPIO Stub file
@@ -32,12 +34,13 @@ else()
     list(APPEND sources src/sws_config.c)
 endif(STUB_CONFIG)
 
+# Executable target (this program):
 add_executable(sws ${sources})
+
+# Need to add src as an include directory for stub files.
 target_include_directories(sws PUBLIC src)
 
-# For windows, remove annoying warnings about "unsafe" functions.
-if(WIN32)
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-endif()
+# Link libraries
+target_link_libraries(sws dbg_lib)
 
 set(CMAKE_C_STANDARD 11)
